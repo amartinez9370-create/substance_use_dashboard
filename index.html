@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smoking and drinking in the Philippines, 2021–2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --bg: #F2F5F6;
+    --panel: #FFFFFF;
+    --ink: #12232B;
+    --muted: #55686F;
+    --line: #D5DEE1;
+    --p1: #0F6B78;
+    --p2: #2F3E9E;
+    --p3: #B83A6B;
+    --d1: #7A3B8C;
+    --d2: #B0651E;
+    --d3: #3E7C59;
+    --flag: #8A5B00;
+    --focus: #1B5FD6;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E181D; --panel: #152329; --ink: #E6EEF1; --muted: #9BB0B8; --line: #26383F;
+      --p1: #4FC0CF; --p2: #8E9BFF; --p3: #F08BB3;
+      --d1: #C58BDA; --d2: #E8A25F; --d3: #7CCB9C;
+      --flag: #F1B84B; --focus: #7FB0FF;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E181D; --panel: #152329; --ink: #E6EEF1; --muted: #9BB0B8; --line: #26383F;
+    --p1: #4FC0CF; --p2: #8E9BFF; --p3: #F08BB3;
+    --d1: #C58BDA; --d2: #E8A25F; --d3: #7CCB9C;
+    --flag: #F1B84B; --focus: #7FB0FF;
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  .app { max-width: 1080px; margin: 0 auto; padding: 28px 20px 56px; }
+  .app[data-domain="smoke"] { --a1: var(--p1); --a2: var(--p2); --a3: var(--p3); }
+  .app[data-domain="drink"] { --a1: var(--d1); --a2: var(--d2); --a3: var(--d3); }
+
+  h1, h2, h3, button, .tag, .num {
+    font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  }
+  h1 { font-size: clamp(1.9rem, 4.6vw, 3rem); line-height: 1.08; margin: 0 0 10px; letter-spacing: -0.02em; font-weight: 700; max-width: 18ch; }
+  .lede { max-width: 62ch; color: var(--muted); margin: 0 0 22px; }
+
+  .tabs { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 4px; background: var(--panel); gap: 4px; }
+  .tabs button {
+    border: 0; background: transparent; color: var(--ink); font-size: 1rem; font-weight: 600;
+    padding: 9px 22px; border-radius: 999px; cursor: pointer;
+  }
+  .tabs button[aria-selected="true"] { background: var(--a1); color: #fff; }
+  :root[data-theme="dark"] .tabs button[aria-selected="true"] { color: #0E181D; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tabs button[aria-selected="true"] { color: #0E181D; } }
+
+  button:focus-visible, .bar:focus-visible, summary:focus-visible, a:focus-visible {
+    outline: 3px solid var(--focus); outline-offset: 2px;
+  }
+
+  .grid { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 22px; margin-top: 26px; align-items: start; }
+  @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+
+  .views { display: flex; flex-direction: column; gap: 8px; }
+  @media (max-width: 820px) { .views { flex-direction: row; overflow-x: auto; padding-bottom: 6px; } .views button { min-width: 220px; } }
+  .views button {
+    text-align: left; border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+    border-radius: 12px; padding: 12px 14px; cursor: pointer; font-size: 0.98rem; font-weight: 600; line-height: 1.25;
+  }
+  .views button[aria-current="true"] { border-color: var(--a1); box-shadow: inset 4px 0 0 var(--a1); }
+  .views .tag { display: block; font-weight: 400; font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 22px 18px; min-width: 0; }
+  .panel h2 { font-size: clamp(1.3rem, 3vw, 1.75rem); line-height: 1.15; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .sub { margin: 0 0 14px; color: var(--muted); max-width: 66ch; }
+
+  .variants { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .variants button {
+    border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px;
+    padding: 6px 14px; font-size: 0.9rem; cursor: pointer; font-weight: 600;
+  }
+  .variants button[aria-pressed="true"] { background: var(--a1); border-color: var(--a1); color: #fff; }
+  :root[data-theme="dark"] .variants button[aria-pressed="true"] { color: #0E181D; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .variants button[aria-pressed="true"] { color: #0E181D; } }
+
+  .chartwrap { width: 100%; }
+  svg { display: block; width: 100%; height: auto; }
+  svg text { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; fill: var(--ink); }
+  .axis text { fill: var(--muted); font-size: 12px; }
+  .grid-line { stroke: var(--line); stroke-width: 1; }
+  .bar { cursor: pointer; }
+  .bar:hover rect.fill { opacity: 0.85; }
+  .vlabel { font-size: 13px; font-weight: 600; }
+
+  .readout { min-height: 1.6em; margin: 6px 0 4px; font-size: 0.98rem; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin: 4px 0 12px; font-family: "Bricolage Grotesque", sans-serif; font-size: 0.9rem; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+  .meta { border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 12px; font-size: 0.95rem; }
+  .meta h3 { font-size: 0.95rem; margin: 0 0 2px; font-weight: 700; }
+  .meta p, .meta ul { margin: 0; }
+  .meta ul { padding-left: 1.1em; }
+  .badge { display: inline-block; font-family: "Bricolage Grotesque", sans-serif; font-weight: 600; font-size: 0.85rem; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--a1); color: var(--a1); }
+  .flagnote { color: var(--flag); }
+  a { color: var(--a1); text-underline-offset: 2px; word-break: break-word; }
+
+  details { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 10px; }
+  summary { cursor: pointer; font-family: "Bricolage Grotesque", sans-serif; font-weight: 600; }
+  .tblwrap { overflow-x: auto; margin-top: 8px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { font-family: "Bricolage Grotesque", sans-serif; font-weight: 600; }
+
+  .foot { margin-top: 18px; color: var(--muted); font-size: 0.88rem; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<main class="app" id="app" data-domain="smoke">
+  <header>
+    <h1>Smoking and drinking in the Philippines</h1>
+    <p class="lede">Rates and, where published, head counts for 2021–2026, checked against published sources. Choose a topic, then a chart. Some charts switch between percentages and numbers of people. Each chart states who was asked, how the measure is defined, and where the number comes from.</p>
+    <div class="tabs" role="tablist" aria-label="Topic">
+      <button role="tab" id="tab-smoke" aria-selected="true" data-domain="smoke">Smoking</button>
+      <button role="tab" id="tab-drink" aria-selected="false" data-domain="drink">Drinking</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <nav class="views" id="views" aria-label="Charts"></nav>
+    <section class="panel" aria-live="off">
+      <h2 id="vtitle"></h2>
+      <p class="sub" id="vsub"></p>
+      <div class="variants" id="variants"></div>
+      <div class="chartwrap"><svg id="chart" viewBox="0 0 640 340" role="group" aria-labelledby="vtitle"></svg></div>
+      <p class="readout" id="readout" aria-live="polite">Hover over or tab to a bar for details.</p>
+      <div class="legend" id="legend"></div>
+      <div class="meta" id="meta"></div>
+      <details>
+        <summary>See the numbers in a table</summary>
+        <div class="tblwrap"><table id="tbl"></table></div>
+      </details>
+    </section>
+  </div>
+
+  <p class="foot">Checked 29 September 2026. FNRI figures come from news reports of its survey presentations and a Congress policy brief, not from FNRI's own tables.</p>
+</main>
+
+<script>
+const DATA = {
+  smoke: {
+    views: [
+      {
+        nav: "Adult tobacco use, 2009–2021",
+        kind: "Survey",
+        title: "Adult tobacco use fell by a third between 2009 and 2021",
+        sub: "The Global Adult Tobacco Survey is the last full national survey of adults. Its next round has not been published.",
+        def: "Adults aged 15 and over who currently use tobacco, daily or less than daily. 2021 breakdown: 34.7% of men and 4.2% of women.",
+        unit: "%",
+        variants: [
+          {
+            label: "Share of adults",
+            groups: ["2009", "2015", "2021"],
+            series: [{ name: "All adults", values: [29.7, 23.8, 19.5] }]
+          },
+          {
+            label: "Number of users",
+            unit: " million",
+            groups: ["2009", "2015", "2021"],
+            series: [{ name: "Adult tobacco users", values: [17.3, 15.9, 15.1] }],
+            notes: [
+              "The share of adults using tobacco fell by a third, but the number of users fell by only about 13% (2.2 million). That fits with a growing population.",
+              "In 2021, about 11.2 million adults (14.5%) smoked tobacco daily."
+            ]
+          }
+        ],
+        sources: [
+          ["GMA News on the 2021 survey results", "https://www.gmanetwork.com/news/lifestyle/healthandwellness/853673/percentage-of-filipinos-who-smoke-use-tobacco-decreases-to-19-5-survey/story/"],
+          ["Tobacco Tactics: Philippines country profile", "https://www.tobaccotactics.org/article/philippines-country-profile/"],
+          ["Congress policy brief on tobacco use", "https://cpbrd.congress.gov.ph/wp-content/uploads/2023/09/FF2023-25-Tobacco-Use-in-the-Philippines.pdf"]
+        ]
+      },
+      {
+        nav: "WHO estimates, 2022 and 2024",
+        kind: "Modelled estimate",
+        title: "WHO estimates about one in five adults used tobacco in 2024",
+        sub: "These are model estimates built from national surveys, not new measurements. Men use tobacco at about eight times the rate of women.",
+        def: "Adults aged 15 and over. 'Tobacco use' includes all forms; 'cigarette smoking' is cigarettes only. 2024 tobacco users were estimated at 16.299 million.",
+        unit: "%",
+        variants: [
+          { label: "Tobacco use", groups: ["2022", "2024"], series: [
+            { name: "All adults", values: [20.4, 19.9] },
+            { name: "Men", values: [36.2, 35.4] },
+            { name: "Women", values: [4.5, 4.4] }
+          ]},
+          { label: "Cigarette smoking", groups: ["2022", "2024"], series: [
+            { name: "All adults", values: [18.9, 17.5] },
+            { name: "Men", values: [33.7, 31.4] },
+            { name: "Women", values: [4.1, 3.5] }
+          ]},
+          { label: "Number of tobacco users", unit: " million", groups: ["2022", "2024"], series: [
+            { name: "All adults", values: [16.303, 16.299] },
+            { name: "Men", values: [14.6, 14.553] },
+            { name: "Women", values: [1.703, 1.745] }
+          ], notes: [
+            "The number of users was almost unchanged between 2022 and 2024 even though the share slipped from 20.4% to 19.9%. Women's numbers rose slightly.",
+            "GATS counted 15.1 million tobacco users in 2021, while WHO's modelled figure for 2022 is 16.3 million. A survey count and a model estimate use different methods, so do not join them into one trend line."
+          ]}
+        ],
+        notes: ["A separate site (Global State of Tobacco Harm Reduction) reports 19.7% current smoking for 2024, citing the same WHO report. It counts 16.3 million smokers, which matches WHO's count of all tobacco users."],
+        sources: [
+          ["Inquirer report on the WHO figures", "https://newsinfo.inquirer.net/2121177/slightly-fewer-filipino-tobacco-users-in-2024"],
+          ["WHO trends report, 6th edition", "https://www.who.int/publications/i/item/9789240116276"],
+          ["Tobacco Atlas (2022 user counts)", "https://tobaccoatlas.org/factsheets/philippines/"],
+          ["Global State of Tobacco Harm Reduction", "https://gsthr.org/countries/profile/phl/"]
+        ]
+      },
+      {
+        nav: "Adults 20–59 who smoke (FNRI)",
+        kind: "Survey",
+        title: "Adult smoking rose between 2021 and 2025 in FNRI's surveys",
+        sub: "FNRI asks adults aged 20 to 59, so these rates are not comparable with the 15+ figures from GATS and WHO.",
+        def: "Adults aged 20–59 who currently smoke, from the DOST-FNRI nutrition surveys.",
+        unit: "%",
+        variants: [{
+          groups: ["2021", "2023", "2025"],
+          series: [{
+            name: "Adults 20–59", values: [18.5, 23.2, 24.9], to: [null, 24.4, null],
+            flags: { 1: "Sources disagree on 2023: a Congress policy brief and PNA give 23.2%, while Bicol Mail gives 24.4%. The dashed part of the bar spans that range. Treat the change from 2023 to 2025 with caution." }
+          }]
+        }],
+        sources: [
+          ["BusinessWorld on the 2025 survey", "https://bworldonline.com/the-nation/2026/06/17/757311/obesity-among-filipino-adults-adolescents-rises-in-2025-new-fnri-survey/"],
+          ["Congress policy brief (2021 and 2023)", "https://cpbrd.congress.gov.ph/wp-content/uploads/2025/06/PB6-Tobacco-Tax-Final.pdf"],
+          ["PNA report", "https://www.pna.gov.ph/articles/1260560"],
+          ["Bicol Mail", "https://www.bicolmail.net/single-post/vaping-attracts-more-users-study-shows"]
+        ]
+      },
+      {
+        nav: "Adolescents 10–19 who smoke (FNRI)",
+        kind: "Survey",
+        title: "Teen smoking more than doubled from 2021 to 2023, then dipped slightly",
+        sub: "Still a small share of teens, but it reversed a decline that had lasted since 2008.",
+        def: "Adolescents aged 10–19 who currently smoke. In 2023 the rate was 0.3% at ages 10–12 and about 14% at ages 18–19.",
+        unit: "%",
+        variants: [{
+          groups: ["2021", "2023", "2025"],
+          series: [{ name: "Adolescents 10–19", values: [2.3, 4.8, 4.5] }]
+        }],
+        sources: [
+          ["PNA report", "https://www.pna.gov.ph/articles/1260560"],
+          ["Congress policy brief", "https://cpbrd.congress.gov.ph/wp-content/uploads/2025/06/PB6-Tobacco-Tax-Final.pdf"],
+          ["BusinessWorld on the 2025 survey", "https://bworldonline.com/the-nation/2026/06/17/757311/obesity-among-filipino-adults-adolescents-rises-in-2025-new-fnri-survey/"]
+        ]
+      },
+      {
+        nav: "Vaping among smokers (FNRI)",
+        kind: "Survey",
+        title: "More adult smokers vape, while fewer teen smokers do",
+        sub: "The share of smokers who vape, not the share of all people who vape.",
+        def: "Of current smokers in each age group, the percentage who use vapes (e-cigarettes).",
+        unit: "%",
+        variants: [
+          { label: "Adults 20–59", groups: ["2023", "2025"], series: [{ name: "Smokers who vape", values: [5.9, 7.9] }] },
+          { label: "Adolescents 10–19", groups: ["2023", "2025"], series: [{
+            name: "Smokers who vape", values: [33.1, 30.3],
+            flags: { 0: "Another report (BusinessMirror) puts the 2023 teen figure at nearly 40%, up from 7.5% in 2021. The two reports have not been reconciled." }
+          }]}
+        ],
+        sources: [
+          ["Bicol Mail", "https://www.bicolmail.net/single-post/vaping-attracts-more-users-study-shows"],
+          ["BusinessMirror (nearly 40% figure)", "https://businessmirror.com.ph/2025/10/29/smoking-among-the-youth-has-doubled-in-just-2-years-dost/"]
+        ]
+      }
+    ]
+  },
+  drink: {
+    views: [
+      {
+        nav: "Adults 20–59 who drink (FNRI)",
+        kind: "Survey",
+        title: "Six in ten adults drank in the past year, and adult drinking edged up",
+        sub: "Among adults who drank in the past 30 days in 2025, 58.8% were binge drinkers.",
+        def: "Adults aged 20–59. 'Past year' means one or more drinks in the year before the survey. 'Past 30 days' means recent drinkers. Binge means 5+ drinks in a row for men or 4+ for women.",
+        unit: "%",
+        variants: [{
+          groups: ["2023", "2025"],
+          series: [
+            { name: "Drank in past year", values: [60.3, 62.5] },
+            { name: "Drank in past 30 days", values: [37.9, 38.6] }
+          ]
+        }],
+        sources: [["Philstar on the 2025 FNRI survey", "https://www.philstar.com/headlines/2026/06/20/2536508/adult-pinoy-drinkers-rise-while-teens-stay-steady"]]
+      },
+      {
+        nav: "Teens and seniors (FNRI)",
+        kind: "Survey",
+        title: "Teen drinking dipped while senior drinking rose",
+        sub: "The two measures use different definitions, so compare each bar with the same group in the other year, not with each other.",
+        def: "Teens are aged 10–19 and seniors are 60 and over. 'Current drinkers' is FNRI's term; for adults it means one or more drinks in the year before the survey. 'Past 30 days' counts only recent drinking.",
+        unit: "%",
+        variants: [{
+          groups: ["2023", "2025"],
+          series: [
+            { name: "Teens, past 30 days", values: [10.0, 9.1] },
+            { name: "Teens, current drinkers", values: [22.6, 22.3] },
+            { name: "Seniors, current drinkers", values: [34.1, 35.8] }
+          ]
+        }],
+        sources: [["Philstar on the 2025 FNRI survey", "https://www.philstar.com/headlines/2026/06/20/2536508/adult-pinoy-drinkers-rise-while-teens-stay-steady"]]
+      },
+      {
+        nav: "2021 phone survey of adults (DOH)",
+        kind: "Survey (phone sample)",
+        title: "In early 2021, four in ten adults had drunk in the past month",
+        sub: "Men reported drinking at nearly twice the rate of women.",
+        def: "3,087 adults surveyed by mobile phone in January 2021. Past 30 days means any alcohol in the last month. Heavy drinking means six or more drinks in one sitting.",
+        unit: "%",
+        variants: [{
+          groups: ["All adults", "Men", "Women"],
+          series: [
+            { name: "Drank in past 30 days", values: [40.1, 51.5, 28.9] },
+            { name: "Heavy drinking", values: [33.1, 43.2, 22.9] }
+          ]
+        }],
+        sources: [["Movendi International summary of the DOH survey", "https://movendi.ngo/news/2021/08/26/philippines-new-survey-data-illustrate-alcohol-harm-but-alcohol-taxation-provides-solution/"]]
+      },
+      {
+        nav: "Adolescents 10–19, 2021 (ENNS)",
+        kind: "Survey",
+        title: "About one in eight adolescents drank in 2021, more boys than girls",
+        sub: "Among adolescent drinkers, 51.4% binge drank.",
+        def: "Adolescents aged 10–19 who currently drink, which FNRI defines as having had one or more drinks. The report does not state the time frame. FNRI's later surveys give a much higher rate for this age group (22.6% in 2023 and 22.3% in 2025), so the definitions probably differ. Do not compare 2021 with later years.",
+        unit: "%",
+        variants: [{
+          groups: ["All", "Boys", "Girls"],
+          series: [{ name: "Current drinkers", values: [13.2, 16.1, 10.4] }]
+        }],
+        sources: [["Manila Bulletin on the 2021 ENNS", "https://mb.com.ph/2024/4/30/study-reveals-alarming-alcohol-consumption-among-filipino-youth"]]
+      },
+      {
+        nav: "Alcohol per person",
+        kind: "WHO estimate, plus one unofficial figure",
+        title: "Alcohol per person: about six litres a year",
+        sub: "The official WHO series ends in 2020. The 2023 bar is a different, unofficial estimate.",
+        def: "Litres of pure alcohol per person aged 15 and over per year, recorded plus unrecorded, adjusted for tourists. The 2019 and 2020 values are WHO estimates via the World Bank.",
+        unit: " L",
+        variants: [{
+          groups: ["2019", "2020", "2023"],
+          series: [{
+            name: "Litres per person", values: [6.18, 5.66, 6.26],
+            flags: { 2: "The 2023 value comes from Statista, not WHO. WHO has published no 2023 value." }
+          }]
+        }],
+        sources: [
+          ["Macrotrends (WHO and World Bank data)", "https://www.macrotrends.net/global-metrics/countries/phl/philippines/alcohol-consumption"],
+          ["Statista (2023 estimate)", "https://statista.com/topics/12259/alcoholic-beverage-in-the-philippines"]
+        ]
+      },
+      {
+        nav: "Deaths linked to alcohol",
+        kind: "Modelled estimate",
+        title: "Alcohol was linked to tens of thousands of deaths in a year",
+        sub: "These are counts of deaths, not of drinkers. The two estimates come from different analyses.",
+        def: "Deaths attributed to alcohol use in modelled Global Burden of Disease estimates. 'Attributed' means deaths from causes where alcohol raised the risk. The 2021 figure is reported as 'more than 24,500'.",
+        unit: "",
+        variants: [{
+          groups: ["2019", "2021"],
+          series: [{
+            name: "Deaths", values: [39802, 24500],
+            flags: { 1: "The 2019 figure is from IHME (via Think Global Health) and the 2021 figure is from a 2024 Global Burden of Disease analysis (via Movendi). The drop may reflect different methods, so do not read it as a real fall." }
+          }]
+        }],
+        sources: [
+          ["Think Global Health (2019 estimate)", "https://www.thinkglobalhealth.org/article/philippines-blind-spot-alcohol"],
+          ["Movendi Global Burden of Disease brief (2021 estimate)", "https://movendi.ngo/wp-content/uploads/2025/03/Philippines-GBD-2024-alcohol-harm.pdf"]
+        ]
+      }
+    ]
+  }
+};
+
+const state = { domain: "smoke", view: 0, variant: 0 };
+const NS = "http://www.w3.org/2000/svg";
+const $ = (id) => document.getElementById(id);
+
+function svgEl(tag, attrs, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function htmlEl(tag, attrs, text) {
+  const e = document.createElement(tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function fmt(v, unit) { return (Math.round(v * 1000) / 1000).toLocaleString("en-US") + unit; }
+function niceStep(m) {
+  const raw = m / 4;
+  const p = Math.pow(10, Math.floor(Math.log10(raw)));
+  const f = raw / p;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
+}
+
+function renderViews() {
+  const nav = $("views");
+  nav.textContent = "";
+  DATA[state.domain].views.forEach((v, i) => {
+    const b = htmlEl("button", { type: "button" });
+    if (i === state.view) b.setAttribute("aria-current", "true");
+    b.appendChild(document.createTextNode(v.nav));
+    b.appendChild(htmlEl("span", { class: "tag" }, v.kind));
+    b.addEventListener("click", () => { state.view = i; state.variant = 0; render(); });
+    nav.appendChild(b);
+  });
+}
+
+function renderChart(v, variant) {
+  const svg = $("chart");
+  svg.textContent = "";
+  const W = 640, H = 340, L = 58, R = 12, T = 26, B = 44;
+  const groups = variant.groups, series = variant.series, n = series.length;
+  const unit = variant.unit !== undefined ? variant.unit : v.unit;
+  let maxV = 0;
+  series.forEach(s => s.values.forEach((x, i) => { maxV = Math.max(maxV, x, (s.to && s.to[i]) || 0); }));
+  const step = niceStep(maxV);
+  const top = Math.ceil(maxV / step - 1e-9) * step;
+  const y = (val) => T + (H - T - B) * (1 - val / top);
+  const colors = ["var(--a1)", "var(--a2)", "var(--a3)"];
+
+  const axis = svgEl("g", { class: "axis" });
+  const ticks = Math.round(top / step);
+  for (let k = 0; k <= ticks; k++) {
+    const t = k * step;
+    axis.appendChild(svgEl("line", { x1: L, x2: W - R, y1: y(t), y2: y(t), class: "grid-line" }));
+    axis.appendChild(svgEl("text", { x: L - 8, y: y(t) + 4, "text-anchor": "end" }, fmt(t, unit === "%" ? "%" : "")));
+  }
+  if (unit === " million") axis.appendChild(svgEl("text", { x: L, y: 12, "text-anchor": "start" }, "Millions of people"));
+  svg.appendChild(axis);
+
+  const gw = (W - L - R) / groups.length;
+  const gap = 5;
+  const bw = Math.min(64, (gw * 0.72 - gap * (n - 1)) / n);
+
+  groups.forEach((g, gi) => {
+    const startX = L + gi * gw + (gw - (bw * n + gap * (n - 1))) / 2;
+    series.forEach((s, si) => {
+      const val = s.values[gi];
+      const x = startX + si * (bw + gap);
+      const flag = s.flags && s.flags[gi];
+      const hi = s.to && s.to[gi];
+      const label = (n > 1 ? s.name + ", " : "") + g + ": " + (hi ? fmt(val, unit) + " to " + fmt(hi, unit) : fmt(val, unit));
+      const grp = svgEl("g", { class: "bar", tabindex: "0", role: "img", "aria-label": label + (flag ? ". Note: " + flag : "") });
+      if (hi) {
+        grp.appendChild(svgEl("rect", { x: x, y: y(hi), width: bw, height: y(val) - y(hi), fill: colors[si], opacity: "0.3", stroke: colors[si], "stroke-dasharray": "4 3", rx: 3 }));
+      }
+      grp.appendChild(svgEl("rect", { class: "fill", x: x, y: y(val), width: bw, height: Math.max(1, y(0) - y(val)), fill: colors[si], rx: 3 }));
+      const shown = (hi ? fmt(val, "") + "–" + fmt(hi, unit) : fmt(val, unit)) + (flag ? "*" : "");
+      grp.appendChild(svgEl("text", { x: x + bw / 2, y: y(hi || val) - 7, "text-anchor": "middle", class: "vlabel" }, shown));
+      const show = () => {
+        $("readout").textContent = label + (flag ? " (see note *)" : "");
+      };
+      grp.addEventListener("mouseenter", show);
+      grp.addEventListener("focus", show);
+      svg.appendChild(grp);
+    });
+    svg.appendChild(svgEl("text", { x: L + gi * gw + gw / 2, y: H - 16, "text-anchor": "middle", style: "font-size:13px;font-weight:600" }, g));
+  });
+}
+
+function renderLegend(variant) {
+  const lg = $("legend");
+  lg.textContent = "";
+  if (variant.series.length < 2) return;
+  const colors = ["var(--a1)", "var(--a2)", "var(--a3)"];
+  variant.series.forEach((s, i) => {
+    const sp = htmlEl("span", {});
+    const sw = htmlEl("i", {});
+    sw.style.background = colors[i];
+    sp.appendChild(sw);
+    sp.appendChild(document.createTextNode(s.name));
+    lg.appendChild(sp);
+  });
+}
+
+function renderMeta(v, variant) {
+  const m = $("meta");
+  m.textContent = "";
+  const block = (title) => { const d = htmlEl("div", {}); d.appendChild(htmlEl("h3", {}, title)); m.appendChild(d); return d; };
+
+  const d1 = block("Who was asked and how it is measured");
+  d1.appendChild(htmlEl("p", {}, v.def));
+
+  const d2 = block("Type of figure");
+  d2.appendChild(htmlEl("span", { class: "badge" }, v.kind));
+
+  const flags = [];
+  variant.series.forEach(s => { if (s.flags) Object.keys(s.flags).forEach(k => flags.push(s.flags[k])); });
+  (v.notes || []).forEach(t => flags.push(t));
+  (variant.notes || []).forEach(t => flags.push(t));
+  if (flags.length) {
+    const d3 = block("Notes and cautions");
+    const ul = htmlEl("ul", { class: "flagnote" });
+    flags.forEach(t => ul.appendChild(htmlEl("li", {}, t)));
+    d3.appendChild(ul);
+  }
+
+  const d4 = block("Sources");
+  const ul2 = htmlEl("ul", {});
+  v.sources.forEach(s => {
+    const li = htmlEl("li", {});
+    li.appendChild(htmlEl("a", { href: s[1], target: "_blank", rel: "noopener noreferrer" }, s[0]));
+    ul2.appendChild(li);
+  });
+  d4.appendChild(ul2);
+}
+
+function renderTable(v, variant) {
+  const tunit = variant.unit !== undefined ? variant.unit : v.unit;
+  const t = $("tbl");
+  t.textContent = "";
+  const thead = htmlEl("thead", {});
+  const hr = htmlEl("tr", {});
+  hr.appendChild(htmlEl("th", { scope: "col" }, "Measure"));
+  variant.groups.forEach(g => hr.appendChild(htmlEl("th", { scope: "col" }, g)));
+  thead.appendChild(hr);
+  t.appendChild(thead);
+  const tb = htmlEl("tbody", {});
+  variant.series.forEach(s => {
+    const tr = htmlEl("tr", {});
+    tr.appendChild(htmlEl("th", { scope: "row" }, s.name));
+    s.values.forEach((val, i) => {
+      const hi = s.to && s.to[i];
+      tr.appendChild(htmlEl("td", {}, hi ? fmt(val, "") + " to " + fmt(hi, tunit) : fmt(val, tunit)));
+    });
+    tb.appendChild(tr);
+  });
+  t.appendChild(tb);
+}
+
+function render() {
+  $("app").setAttribute("data-domain", state.domain);
+  ["smoke", "drink"].forEach(d => $("tab-" + d).setAttribute("aria-selected", String(d === state.domain)));
+  renderViews();
+  const v = DATA[state.domain].views[state.view];
+  const variant = v.variants[state.variant];
+  $("vtitle").textContent = v.title;
+  $("vsub").textContent = v.sub;
+  $("readout").textContent = "Hover over or tab to a bar for details.";
+
+  const vs = $("variants");
+  vs.textContent = "";
+  if (v.variants.length > 1) {
+    v.variants.forEach((vr, i) => {
+      const b = htmlEl("button", { type: "button", "aria-pressed": String(i === state.variant) }, vr.label);
+      b.addEventListener("click", () => { state.variant = i; render(); });
+      vs.appendChild(b);
+    });
+  }
+  renderChart(v, variant);
+  renderLegend(variant);
+  renderMeta(v, variant);
+  renderTable(v, variant);
+}
+
+document.querySelectorAll(".tabs button").forEach(b => {
+  b.addEventListener("click", () => { state.domain = b.dataset.domain; state.view = 0; state.variant = 0; render(); });
+});
+render();
+</script>
+</body>
+</html>
