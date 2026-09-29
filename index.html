@@ -167,6 +167,40 @@ const DATA = {
   smoke: {
     views: [
       {
+        nav: "Trend, 2021–2026",
+        kind: "Survey and model figures",
+        title: "Smoking has not clearly fallen since 2021",
+        sub: "The sources point in different directions: WHO's model shows a slight dip, while FNRI's survey shows a rise. There is no 2026 data yet.",
+        def: "Each line is a separate source and should not be joined to the others. GATS and WHO cover adults aged 15 and over and measure any tobacco use. FNRI covers adults aged 20–59 and measures smoking. GATS and FNRI are surveys; the WHO line is a modelled estimate. Dashed lines cross years with no data.",
+        unit: "%",
+        variants: [
+          {
+            label: "Adults", kind: "line",
+            groups: ["2021", "2022", "2023", "2024", "2025", "2026"],
+            series: [
+              { name: "GATS survey, 15+", values: [19.5, null, null, null, null, null] },
+              { name: "WHO model, 15+", values: [null, 20.4, null, 19.9, null, null] },
+              { name: "FNRI survey, 20–59", values: [18.5, null, 23.2, null, 24.9, null], to: [null, null, 24.4, null, null, null],
+                flags: { 2: "Sources disagree on FNRI's 2023 rate: 23.2% (Congress policy brief, PNA) or 24.4% (Bicol Mail). The dashed whisker spans that range." } }
+            ],
+            notes: ["No national survey covering 2026 has been published. The newest figures are FNRI's 2025 survey, presented in June 2026."]
+          },
+          {
+            label: "Teens 10–19", kind: "line",
+            groups: ["2021", "2022", "2023", "2024", "2025", "2026"],
+            series: [{ name: "FNRI survey, 10–19", values: [2.3, null, 4.8, null, 4.5, null] }],
+            notes: ["No national survey covering 2026 has been published. The newest figures are FNRI's 2025 survey, presented in June 2026."]
+          }
+        ],
+        sources: [
+          ["Tobacco Tactics: Philippines country profile (GATS)", "https://www.tobaccotactics.org/article/philippines-country-profile/"],
+          ["Inquirer report on the WHO figures", "https://newsinfo.inquirer.net/2121177/slightly-fewer-filipino-tobacco-users-in-2024"],
+          ["BusinessWorld on the 2025 FNRI survey", "https://bworldonline.com/the-nation/2026/06/17/757311/obesity-among-filipino-adults-adolescents-rises-in-2025-new-fnri-survey/"],
+          ["Congress policy brief (FNRI 2021 and 2023)", "https://cpbrd.congress.gov.ph/wp-content/uploads/2025/06/PB6-Tobacco-Tax-Final.pdf"],
+          ["Bicol Mail", "https://www.bicolmail.net/single-post/vaping-attracts-more-users-study-shows"]
+        ]
+      },
+      {
         nav: "Adult tobacco use, 2009–2021",
         kind: "Survey",
         title: "Adult tobacco use fell by a third between 2009 and 2021",
@@ -292,6 +326,39 @@ const DATA = {
   },
   drink: {
     views: [
+      {
+        nav: "Trend, 2021–2026",
+        kind: "Survey figures",
+        title: "Drinking has changed little in the surveys available",
+        sub: "Adult drinking edged up between FNRI's 2023 and 2025 surveys, and teen drinking edged down. There is no 2026 data yet.",
+        def: "FNRI covers adults aged 20–59 and teens aged 10–19. 'Past year' means one or more drinks in the year before the survey; 'past 30 days' means recent drinkers. The 2021 point is a January 2021 DOH phone survey of adults, a different survey with a different method, so it is not part of the FNRI trend. Dashed lines cross years with no data.",
+        unit: "%",
+        variants: [
+          {
+            label: "Adults", kind: "line",
+            groups: ["2021", "2022", "2023", "2024", "2025", "2026"],
+            series: [
+              { name: "FNRI, past year", values: [null, null, 60.3, null, 62.5, null] },
+              { name: "FNRI, past 30 days", values: [null, null, 37.9, null, 38.6, null] },
+              { name: "DOH phone survey, past 30 days", values: [40.1, null, null, null, null, null] }
+            ],
+            notes: ["No national survey covering 2026 has been published. The newest figures are FNRI's 2025 survey, presented in June 2026."]
+          },
+          {
+            label: "Teens 10–19", kind: "line",
+            groups: ["2021", "2022", "2023", "2024", "2025", "2026"],
+            series: [
+              { name: "FNRI, current drinkers", values: [null, null, 22.6, null, 22.3, null] },
+              { name: "FNRI, past 30 days", values: [null, null, 10.0, null, 9.1, null] }
+            ],
+            notes: ["No national survey covering 2026 has been published. The newest figures are FNRI's 2025 survey, presented in June 2026."]
+          }
+        ],
+        sources: [
+          ["Philstar on the 2025 FNRI survey", "https://www.philstar.com/headlines/2026/06/20/2536508/adult-pinoy-drinkers-rise-while-teens-stay-steady"],
+          ["Movendi summary of the 2021 DOH survey", "https://movendi.ngo/news/2021/08/26/philippines-new-survey-data-illustrate-alcohol-harm-but-alcohol-taxation-provides-solution/"]
+        ]
+      },
       {
         nav: "Adults 20–59 who drink (FNRI)",
         kind: "Survey",
@@ -433,7 +500,74 @@ function renderViews() {
   });
 }
 
+function renderLine(v, variant) {
+  const svg = $("chart");
+  svg.textContent = "";
+  const W = 640, H = 340, L = 58, R = 24, T = 30, B = 54;
+  const groups = variant.groups, series = variant.series;
+  const unit = variant.unit !== undefined ? variant.unit : v.unit;
+  const colors = ["var(--a1)", "var(--a2)", "var(--a3)"];
+  let maxV = 0;
+  series.forEach(s => s.values.forEach((val, i) => { maxV = Math.max(maxV, val || 0, (s.to && s.to[i]) || 0); }));
+  const step = niceStep(maxV);
+  const top = Math.ceil(maxV / step - 1e-9) * step;
+  const y = (val) => T + (H - T - B) * (1 - val / top);
+  const gw = (W - L - R) / groups.length;
+  const x = (i) => L + gw * (i + 0.5);
+
+  const axis = svgEl("g", { class: "axis" });
+  const ticks = Math.round(top / step);
+  for (let k = 0; k <= ticks; k++) {
+    const t = k * step;
+    axis.appendChild(svgEl("line", { x1: L, x2: W - R, y1: y(t), y2: y(t), class: "grid-line" }));
+    axis.appendChild(svgEl("text", { x: L - 8, y: y(t) + 4, "text-anchor": "end" }, fmt(t, unit === "%" ? "%" : "")));
+  }
+  svg.appendChild(axis);
+
+  groups.forEach((g, i) => {
+    svg.appendChild(svgEl("text", { x: x(i), y: H - 28, "text-anchor": "middle", style: "font-size:13px;font-weight:600" }, g));
+    const any = series.some(s => s.values[i] !== null && s.values[i] !== undefined);
+    if (!any) svg.appendChild(svgEl("text", { x: x(i), y: H - 12, "text-anchor": "middle", style: "font-size:11px;fill:var(--muted)" }, "no data"));
+  });
+
+  series.forEach((s, si) => {
+    const pts = [];
+    s.values.forEach((val, i) => { if (val !== null && val !== undefined) pts.push({ i: i, val: val }); });
+    for (let k = 0; k < pts.length - 1; k++) {
+      const a = pts[k], b = pts[k + 1];
+      const attrs = { x1: x(a.i), y1: y(a.val), x2: x(b.i), y2: y(b.val), stroke: colors[si], "stroke-width": 2.5 };
+      if (b.i - a.i > 1) attrs["stroke-dasharray"] = "6 5";
+      svg.appendChild(svgEl("line", attrs));
+    }
+    pts.forEach(p => {
+      const hi = s.to && s.to[p.i];
+      if (hi) svg.appendChild(svgEl("line", { x1: x(p.i), y1: y(p.val), x2: x(p.i), y2: y(hi), stroke: colors[si], "stroke-width": 2, "stroke-dasharray": "3 3" }));
+    });
+  });
+
+  groups.forEach((g, gi) => {
+    const here = [];
+    series.forEach((s, si) => { const val = s.values[gi]; if (val !== null && val !== undefined) here.push({ s: s, si: si, val: val, hi: s.to && s.to[gi] }); });
+    if (!here.length) return;
+    const highest = Math.max.apply(null, here.map(h => h.hi || h.val));
+    here.forEach(h => {
+      const flag = h.s.flags && h.s.flags[gi];
+      const label = h.s.name + ", " + g + ": " + (h.hi ? fmt(h.val, unit) + " to " + fmt(h.hi, unit) : fmt(h.val, unit));
+      const grp = svgEl("g", { class: "bar", tabindex: "0", role: "img", "aria-label": label + (flag ? ". Note: " + flag : "") });
+      grp.appendChild(svgEl("circle", { cx: x(gi), cy: y(h.val), r: 6, fill: colors[h.si], stroke: "var(--panel)", "stroke-width": 2 }));
+      const shown = (h.hi ? fmt(h.val, "") + "–" + fmt(h.hi, unit) : fmt(h.val, unit)) + (flag ? "*" : "");
+      const above = (h.hi || h.val) === highest;
+      grp.appendChild(svgEl("text", { x: x(gi), y: above ? y(h.hi || h.val) - 11 : y(h.val) + 20, "text-anchor": "middle", class: "vlabel" }, shown));
+      const show = () => { $("readout").textContent = label + (flag ? " (see note *)" : ""); };
+      grp.addEventListener("mouseenter", show);
+      grp.addEventListener("focus", show);
+      svg.appendChild(grp);
+    });
+  });
+}
+
 function renderChart(v, variant) {
+  if (variant.kind === "line") { renderLine(v, variant); return; }
   const svg = $("chart");
   svg.textContent = "";
   const W = 640, H = 340, L = 58, R = 12, T = 26, B = 44;
@@ -549,7 +683,7 @@ function renderTable(v, variant) {
     tr.appendChild(htmlEl("th", { scope: "row" }, s.name));
     s.values.forEach((val, i) => {
       const hi = s.to && s.to[i];
-      tr.appendChild(htmlEl("td", {}, hi ? fmt(val, "") + " to " + fmt(hi, tunit) : fmt(val, tunit)));
+      tr.appendChild(htmlEl("td", {}, (val === null || val === undefined) ? "–" : hi ? fmt(val, "") + " to " + fmt(hi, tunit) : fmt(val, tunit)));
     });
     tb.appendChild(tr);
   });
